@@ -45,6 +45,8 @@ namespace CV_app
 
         private void Setting_Load(object sender, EventArgs e)
         {
+            //隐藏tbpRecipe
+            tbpRecipe.Parent = null;
             BuildDataGridView();
         }
 
@@ -65,7 +67,10 @@ namespace CV_app
                 __InitGainUI();
 
                 __InitOutput();
-
+                txtCaptureDelay.Enabled = true;
+                txtCaptureDelay.Text = database.getValue("capturedelay");
+                //GlobalVar.camera.m_objIGXFeatureControl.GetEnumFeature("LineSelector").SetValue("Line3");
+                //GlobalVar.camera.m_objIGXFeatureControl.GetEnumFeature("LineMode").SetValue("Output");
                 Console.WriteLine("camera初始化成功");
             }
 
@@ -652,11 +657,24 @@ namespace CV_app
                     }
                 }
             }
-
         }
 
         private void Setting_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (null != GlobalVar.camera)
+            {
+                try
+                {
+                    GlobalVar.camera.m_objIGXFeatureControl.GetEnumFeature("UserSetSelector").SetValue("UserSet0");
+                    GlobalVar.camera.m_objIGXFeatureControl.GetCommandFeature("UserSetSave").Execute();
+                    GlobalVar.camera.m_objIGXFeatureControl.GetEnumFeature("UserSetDefault").SetValue("UserSet0");
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+
             GlobalVar.frmSetting = null;
             Parameters parameters = new Parameters();
             parameters.initialParameters();
@@ -695,6 +713,63 @@ namespace CV_app
                 BuildDataGridView();
                 dv.Rows[index].Selected = true;
             }
+        }
+
+        private void txtCaptureDelay_TextChanged(object sender, EventArgs e)
+        {
+            if (txtCaptureDelay.Text != null)
+            {
+                database.setValue("capturedelay", txtCaptureDelay.Text);
+                GlobalVar.camera.m_objIGXFeatureControl.GetFloatFeature("TriggerDelay").SetValue(Convert.ToInt32(txtCaptureDelay.Text) * 1000);
+            }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if(checkBox1.Checked)
+            {
+                database.setValue("readqr", "true");
+                string detProto = database.getValue("detproto");
+                string detModel = database.getValue("detmodel");
+                string supRsProto = database.getValue("suprsproto");
+                string supRsModel = database.getValue("suprsmodel");
+                bool isDetProtoExists = File.Exists(detProto);
+                if (!isDetProtoExists)
+                {
+                    MessageBox.Show("模型文件不存在:" + detProto);
+                }
+                bool isDetModelExists = File.Exists(detModel);
+                if (!isDetModelExists)
+                {
+                    MessageBox.Show("模型文件不存在:" + detModel);
+                }
+                bool isSRProtoExists = File.Exists(supRsProto);
+                if (!isSRProtoExists)
+                {
+                    MessageBox.Show("模型文件不存在:" + supRsProto);
+                }
+                bool isSRModelExists = File.Exists(supRsModel);
+                if (!isSRModelExists)
+                {
+                    MessageBox.Show("Keys文件不存在:" + supRsModel);
+                }
+                if (isDetProtoExists && isDetModelExists && isSRProtoExists && isSRModelExists)
+                {
+                   GlobalVar.qRCode = new WeChatQRCode(detProto, detModel, supRsProto, supRsModel);
+                }
+                else
+                {
+                    MessageBox.Show("初始化失败，请确认解码模型文件夹和文件后，重新初始化！");
+                }
+            }
+            else
+                database.setValue("readqr", "false");
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedTab.Name == "tbpAllParams")
+                BuildDataGridView();
         }
 
         int px, py, pw, ph;

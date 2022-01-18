@@ -221,6 +221,14 @@ namespace CV_app
                 if (Convert.ToBoolean(database.getValue("imageprocess")))
                     imageProcess.process(ocrImg);
                 GlobalVar.ocrResult = readOCR.recognizeText(ocrImg);
+                //读取二维码
+                string qRstatus = database.getValue("readqr");
+                if(qRstatus=="true")
+                {
+                    ReadQR qR = new ReadQR();
+                    qR.decode(matImage);
+                }
+                
                 result = readOCR.checkResult(GlobalVar.ocrResult.StrRes);
                 Console.WriteLine("result:" + result);
                 outPut = database.getValue("output");

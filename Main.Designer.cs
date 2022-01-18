@@ -61,12 +61,12 @@ namespace CV_app
             // 
             // lblResultstr
             // 
-            this.lblResultstr.Font = new System.Drawing.Font("YouYuan", 32F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblResultstr.Font = new System.Drawing.Font("YouYuan", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblResultstr.Location = new System.Drawing.Point(419, 626);
             this.lblResultstr.Name = "lblResultstr";
             this.lblResultstr.Size = new System.Drawing.Size(301, 90);
             this.lblResultstr.TabIndex = 83;
-            this.lblResultstr.Text = "HelloWorld合格123456";
+            this.lblResultstr.Text = "HelloWorld\r\n合格123456\r\n读取结果";
             // 
             // chkConnectCam
             // 

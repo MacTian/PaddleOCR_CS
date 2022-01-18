@@ -13,6 +13,7 @@ namespace CV_app
         {
             initPPOCR();
             initQRCode();
+            initFilePath();
             string fname = Directory.GetCurrentDirectory().ToString() + "\\Models\\Pattern1.bmp";
             GlobalVar.templateImg = CvInvoke.Imread(fname);
             return false;
@@ -74,6 +75,31 @@ namespace CV_app
                 Console.WriteLine("QR初始化失败，请确认模型文件夹和文件后，重新初始化！");
                 return false;
             }
+        }
+
+        private bool initFilePath()
+        {
+            string appPath = AppDomain.CurrentDomain.BaseDirectory;
+            string appDir = Directory.GetParent(appPath).FullName;
+            string modelsDir = appPath + "Models";
+            string detPath = modelsDir + "\\ch_PP-OCRv2_det_infer.onnx";
+            string recPath = modelsDir + "\\ch_PP-OCRv2_rec_infer.onnx";
+            string clsPath = modelsDir + "\\ch_ppocr_mobile_v2.0_cls_infer.onnx";
+            string keysPath = modelsDir + "\\ppocr_keys_v1.txt";
+            string detProto = modelsDir + "\\detect.prototxt";
+            string detModel = modelsDir + "\\detect.caffemodel";
+            string supRsProto = modelsDir + "\\sr.prototxt";
+            string supRsModel = modelsDir + "\\sr.caffemodel";
+            database.setValue("detpath", detPath);
+            database.setValue("recpath", recPath);
+            database.setValue("clspath", clsPath);
+            database.setValue("keyspath", keysPath);
+            database.setValue("detproto", detProto);
+            database.setValue("detmodel", detModel);
+            database.setValue("suprsproto", supRsProto);
+            database.setValue("suprsmodel", supRsModel);
+
+            return false;
         }
     }
 }

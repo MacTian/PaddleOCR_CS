@@ -1,14 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Emgu.CV;
 
 namespace CV_app
 {
@@ -22,14 +14,18 @@ namespace CV_app
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            try
+            if (null != GlobalVar.camera)
             {
-               GlobalVar.camera.releaseCam();
+                try
+                {
+                    GlobalVar.camera.releaseCam();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
+
             Environment.Exit(0);
         }
 
@@ -63,7 +59,11 @@ namespace CV_app
 
         private void chkConnectCam_CheckedChanged(object sender, EventArgs e)
         {
-            
+            if (null == GlobalVar.camera)
+            {
+                GlobalVar.camera = new Camera();
+            }
+
             if (chkConnectCam.Checked)
             {
                 if (GlobalVar.camera.initialCamera())
@@ -85,8 +85,10 @@ namespace CV_app
                 chkConnectCam.BeginInvoke(new MethodInvoker(() => chkConnectCam.Image = Properties.Resources.offline));
                 chkConnectCam.BeginInvoke(new MethodInvoker(() => chkConnectCam.Text = "脱机"));
                 //releaseCam(1);
-                if (null!=GlobalVar.camera)
+                if (null != GlobalVar.camera)
+                {
                     GlobalVar.camera.releaseCam();
+                }
             }
         }
 
@@ -107,11 +109,11 @@ namespace CV_app
 
         private void Main_Load(object sender, EventArgs e)
         {
-            GlobalVar.camera = new Camera();
+
             GlobalVar.ZAppParam_CCDs = ZDatabase.Instance().GetParams<AppParam_CCD>("app_ccd");
             Parameters parameters = new Parameters();
             parameters.initialParameters();
-            
+
         }
     }
 }
