@@ -78,6 +78,7 @@ namespace CV_app
             this.label4 = new System.Windows.Forms.Label();
             this.m_cb_TriggerMode = new System.Windows.Forms.ComboBox();
             this.tbpOCRSetting = new System.Windows.Forms.TabPage();
+            this.picTips = new System.Windows.Forms.PictureBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.btnFinishSet = new System.Windows.Forms.Button();
             this.txtOperateRecords = new System.Windows.Forms.TextBox();
@@ -107,6 +108,7 @@ namespace CV_app
             this.groupBox3.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.tbpOCRSetting.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTips)).BeginInit();
             this.tbpAllParams.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCCDParams)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -663,6 +665,7 @@ namespace CV_app
             // 
             // tbpOCRSetting
             // 
+            this.tbpOCRSetting.Controls.Add(this.picTips);
             this.tbpOCRSetting.Controls.Add(this.checkBox1);
             this.tbpOCRSetting.Controls.Add(this.btnFinishSet);
             this.tbpOCRSetting.Controls.Add(this.txtOperateRecords);
@@ -678,6 +681,16 @@ namespace CV_app
             this.tbpOCRSetting.Text = "读取设置";
             this.tbpOCRSetting.UseVisualStyleBackColor = true;
             // 
+            // picTips
+            // 
+            this.picTips.Location = new System.Drawing.Point(120, 176);
+            this.picTips.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.picTips.Name = "picTips";
+            this.picTips.Size = new System.Drawing.Size(284, 266);
+            this.picTips.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picTips.TabIndex = 7;
+            this.picTips.TabStop = false;
+            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -688,6 +701,7 @@ namespace CV_app
             this.checkBox1.TabIndex = 6;
             this.checkBox1.Text = "读取二维码";
             this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.Visible = false;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // btnFinishSet
@@ -705,15 +719,15 @@ namespace CV_app
             // txtOperateRecords
             // 
             this.txtOperateRecords.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtOperateRecords.Location = new System.Drawing.Point(147, 6);
+            this.txtOperateRecords.Location = new System.Drawing.Point(120, 6);
             this.txtOperateRecords.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtOperateRecords.Multiline = true;
             this.txtOperateRecords.Name = "txtOperateRecords";
             this.txtOperateRecords.ReadOnly = true;
-            this.txtOperateRecords.Size = new System.Drawing.Size(258, 437);
+            this.txtOperateRecords.Size = new System.Drawing.Size(285, 167);
             this.txtOperateRecords.TabIndex = 4;
-            this.txtOperateRecords.Text = "操作说明\r\n1.点击选择产品按钮，加载模板图片\r\n2.点击创建模板按钮，用鼠标框选模板特征(唯一且不变的特征)\r\n3.点击设置区域按钮，用鼠标框选整个打标内容在图" +
-    "像上可能出现的范围\r\n4.点击读取内容按钮，用鼠标框选需要读取的字符内容范围\r\n5.结束设置，返回主界面开始运行";
+            this.txtOperateRecords.Text = "操作说明\r\n1.点击框选特征按钮，用鼠标框选模板特征(唯一且不变的特征)\r\n2.点击框选范围按钮，用鼠标框选整个打标内容在图像上可能出现的范围\r\n3.点击框选按钮" +
+    "，用鼠标框选需要读取的字符内容范围";
             // 
             // btnOCRRegion
             // 
@@ -722,9 +736,10 @@ namespace CV_app
             this.btnOCRRegion.Name = "btnOCRRegion";
             this.btnOCRRegion.Size = new System.Drawing.Size(110, 43);
             this.btnOCRRegion.TabIndex = 3;
-            this.btnOCRRegion.Text = "读取内容";
+            this.btnOCRRegion.Text = "框选内容";
             this.btnOCRRegion.UseVisualStyleBackColor = true;
             this.btnOCRRegion.Click += new System.EventHandler(this.btnOCRRegion_Click);
+            this.btnOCRRegion.MouseEnter += new System.EventHandler(this.btnOCRRegion_MouseEnter);
             // 
             // btnSearchRegion
             // 
@@ -733,9 +748,10 @@ namespace CV_app
             this.btnSearchRegion.Name = "btnSearchRegion";
             this.btnSearchRegion.Size = new System.Drawing.Size(110, 43);
             this.btnSearchRegion.TabIndex = 2;
-            this.btnSearchRegion.Text = "设置区域";
+            this.btnSearchRegion.Text = "框选范围";
             this.btnSearchRegion.UseVisualStyleBackColor = true;
             this.btnSearchRegion.Click += new System.EventHandler(this.btnSearchRegion_Click);
+            this.btnSearchRegion.MouseEnter += new System.EventHandler(this.btnSearchRegion_MouseEnter);
             // 
             // btnCreatePattern
             // 
@@ -744,9 +760,10 @@ namespace CV_app
             this.btnCreatePattern.Name = "btnCreatePattern";
             this.btnCreatePattern.Size = new System.Drawing.Size(110, 43);
             this.btnCreatePattern.TabIndex = 1;
-            this.btnCreatePattern.Text = "创建模板";
+            this.btnCreatePattern.Text = "框选特征";
             this.btnCreatePattern.UseVisualStyleBackColor = true;
             this.btnCreatePattern.Click += new System.EventHandler(this.btnCreatePattern_Click);
+            this.btnCreatePattern.MouseEnter += new System.EventHandler(this.btnCreatePattern_MouseEnter);
             // 
             // btnSelectModel
             // 
@@ -882,12 +899,11 @@ namespace CV_app
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(976, 503);
+            this.ClientSize = new System.Drawing.Size(964, 491);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Setting";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Setting";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Setting_FormClosing);
             this.Load += new System.EventHandler(this.Setting_Load);
@@ -911,6 +927,7 @@ namespace CV_app
             this.groupBox5.PerformLayout();
             this.tbpOCRSetting.ResumeLayout(false);
             this.tbpOCRSetting.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTips)).EndInit();
             this.tbpAllParams.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvCCDParams)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -988,5 +1005,6 @@ namespace CV_app
         private System.Windows.Forms.TextBox txtCaptureDelay;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.CheckBox checkBox1;
+        public System.Windows.Forms.PictureBox picTips;
     }
 }

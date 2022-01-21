@@ -157,6 +157,7 @@ namespace CV_app
             // 
             // picImage
             // 
+            this.picImage.BackColor = System.Drawing.SystemColors.Control;
             this.picImage.Location = new System.Drawing.Point(0, 80);
             this.picImage.Name = "picImage";
             this.picImage.Size = new System.Drawing.Size(720, 540);
@@ -232,7 +233,7 @@ namespace CV_app
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1024, 718);
+            this.ClientSize = new System.Drawing.Size(1024, 735);
             this.Controls.Add(this.lblNG);
             this.Controls.Add(this.lblTotal);
             this.Controls.Add(this.label3);

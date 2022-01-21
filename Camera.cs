@@ -81,7 +81,7 @@ namespace CV_app
                     m_objIGXDevice.Close();
                     m_objIGXDevice = null;
                 }
-                if(null!=m_objIGXFactory)
+                if (null != m_objIGXFactory)
                 {
                     m_objIGXFactory.Uninit();
                     m_objIGXFactory = null;
@@ -200,12 +200,13 @@ namespace CV_app
 
         private void __CaptureCallbackPro(object objUserParam, IFrameData objIFrameData)
         {
+            GlobalVar.log.AppandText("采集图像");
             try
             {
                 Bitmap img = m_objGxBitmap.GetBmp(objIFrameData);
                 Image<Bgr, Byte> image = img.ToImage<Bgr, byte>();
                 matImage = image.Mat;
-                
+
                 if (GlobalVar.frmSetting != null)
                 {
                     if (GlobalVar.frmSetting.TopLevel)
@@ -221,22 +222,24 @@ namespace CV_app
                 if (Convert.ToBoolean(database.getValue("imageprocess")))
                     imageProcess.process(ocrImg);
                 GlobalVar.ocrResult = readOCR.recognizeText(ocrImg);
+
                 //读取二维码
                 string qRstatus = database.getValue("readqr");
-                if(qRstatus=="true")
+                if (qRstatus == "true")
                 {
                     ReadQR qR = new ReadQR();
                     qR.decode(matImage);
                 }
-                
+
                 result = readOCR.checkResult(GlobalVar.ocrResult.StrRes);
                 Console.WriteLine("result:" + result);
+                GlobalVar.log.AppandText("是否输出:" + result);
                 outPut = database.getValue("output");
                 if (outPut == "true")
                 {
                     if (result)
                     {
-                        int tmp = GlobalVar. iCount + Convert.ToInt32(database.getValue("outgap"));
+                        int tmp = GlobalVar.iCount + Convert.ToInt32(database.getValue("outgap"));
                         arrOutvalue.Add(tmp);
                     }
 
@@ -260,7 +263,7 @@ namespace CV_app
                     CvInvoke.PutText(matImage, "NG", txtLocation, FontFace.HersheyComplex, 4.0, regionColor, 4, LineType.Filled);
                 CvInvoke.Rectangle(matImage, region, regionColor, 1);
                 GlobalVar.frmMain.picImage.BeginInvoke(new MethodInvoker(() => GlobalVar.frmMain.picImage.Image = matImage.ToBitmap()));
-                GlobalVar.frmMain.picRegion.BeginInvoke(new MethodInvoker(() => GlobalVar.frmMain.picRegion.Image=ocrImg.ToBitmap()));
+                GlobalVar.frmMain.picRegion.BeginInvoke(new MethodInvoker(() => GlobalVar.frmMain.picRegion.Image = ocrImg.ToBitmap()));
                 GlobalVar.frmMain.lblResultstr.BeginInvoke(new MethodInvoker(() => GlobalVar.frmMain.lblResultstr.Text = GlobalVar.ocrResult.StrRes));
                 GlobalVar.iCount += 1;
                 updateData();
@@ -313,7 +316,7 @@ namespace CV_app
 
         public void updateData()
         {
-            GlobalVar.frmMain.lblTotal.BeginInvoke(new MethodInvoker(() => GlobalVar.frmMain.lblTotal.Text=GlobalVar.iCount.ToString()));
+            GlobalVar.frmMain.lblTotal.BeginInvoke(new MethodInvoker(() => GlobalVar.frmMain.lblTotal.Text = GlobalVar.iCount.ToString()));
             GlobalVar.frmMain.lblNG.BeginInvoke(new MethodInvoker(() => GlobalVar.frmMain.lblNG.Text = GlobalVar.iNG.ToString()));
             //DateTime dateTime = DateTime.Now;
             //GlobalVar.frmMain.chart1.BeginInvoke(new MethodInvoker(()=>GlobalVar.frmMain.chart1.Series[0].Points.AddXY(dateTime, GlobalVar.iCount)));
@@ -352,12 +355,29 @@ namespace CV_app
             }
             if (imageSave == "ng" && result)
             {
+                if(DiskSpace.GetHardDiskFreeSpace("D")<1000)
+                    GlobalVar.log.AppandText("磁盘空间不足1000M");
                 m_objGxBitmap.SaveBmp(objIFrameData, stfFileName);
+                GlobalVar.log.AppandText("保存NG图像:" + stfFileName);
             }
             if (imageSave == "all")
             {
                 m_objGxBitmap.SaveBmp(objIFrameData, stfFileName);
             }
+        }
+        public long GetHardDiskFreeSpace(string str_HardDiskName)
+        {
+            long freeSpace = new long();
+            str_HardDiskName = str_HardDiskName + ":\\";
+            DriveInfo[] drives = DriveInfo.GetDrives();
+            foreach (DriveInfo drive in drives)
+            {
+                if (drive.Name == str_HardDiskName)
+                {
+                    freeSpace = drive.TotalFreeSpace;
+                }
+            }
+            return freeSpace;
         }
     }
 }

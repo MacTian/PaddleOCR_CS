@@ -75,7 +75,7 @@ namespace CV_app
 
         private void txtValue_TextChanged(object sender, EventArgs e)
         {
-            _value = txtValue.Text;
+            _value = txtValue.Text; 
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -85,6 +85,7 @@ namespace CV_app
 
                 GlobalVar.ZAppParam_CCDs[ename].value = _value;
                 GlobalVar.frmSetting.BuildDataGridView();
+                GlobalVar.log.AppandText("修改参数" + ename + ":由" + value+"修改为"+_value);
                 this.Close();
             }
             else

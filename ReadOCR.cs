@@ -68,14 +68,14 @@ namespace CV_app
                 MessageBox.Show("未初始化，无法执行!");
                 return null;
             }
-            if (image.Height < 96)
+            if (image.Height < 96 || image.Width<96)
                 resizeImage(image);
             int padding = 0;
             int imgResize = 1024;
             float boxScoreThresh = 0.7f;
             float boxThresh = 0.3f;
             float unClipRatio = 2.0f;
-            bool doAngle = false;
+            bool doAngle = true;
             bool mostAngle = false;
             return GlobalVar.ocrEngin.DetectAndRecognize(image, padding, imgResize, boxScoreThresh, boxThresh, unClipRatio, doAngle, mostAngle);
         }
@@ -87,10 +87,12 @@ namespace CV_app
             if (null != markcontent)
             {
                 markcontent = Regex.Replace(markcontent, @"[\s]", "");
+                GlobalVar.log.AppandText("标刻OCR:" + markcontent);
             }
             if (null != str)
             {
                 str = Regex.Replace(str, @"[\s]", "");
+                GlobalVar.log.AppandText("读取OCR:" +str);
             }
             Console.WriteLine("[" + str + "][" + markcontent + "]");
             if (str == markcontent)
@@ -137,9 +139,15 @@ namespace CV_app
 
         public void resizeImage(Mat src)
         {
-            double scale = 256 / src.Height;
+            double scale;
+            if (src.Height < 96)
+                scale = 256 / src.Height;
+            else
+                scale = 256 / src.Width;
+
             CvInvoke.Resize(src, src, new Size((int)(src.Width * scale), (int)(src.Height * scale)));
-            CvInvoke.Imwrite("D:\\tmp.bmp", src);
+            GlobalVar.log.AppandText("区域较小，缩放:" + scale.ToString());
+            //CvInvoke.Imwrite("D:\\tmp.bmp", src);
         }
     }
 }

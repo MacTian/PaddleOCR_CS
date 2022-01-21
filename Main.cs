@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -25,7 +26,7 @@ namespace CV_app
                     Console.WriteLine(ex.StackTrace);
                 }
             }
-
+            GlobalVar.log.AppandText("关闭程序");
             Environment.Exit(0);
         }
 
@@ -34,6 +35,7 @@ namespace CV_app
         {
             ImageView f = new ImageView();
             f.ShowDialog();
+            GlobalVar.log.AppandText("打开图像记录");
         }
 
         private void chkOutput_CheckedChanged(object sender, EventArgs e)
@@ -44,6 +46,7 @@ namespace CV_app
                 database.setValue("output", "true");
                 chkOutput.BeginInvoke(new MethodInvoker(() => chkOutput.Text = "启用输出"));
                 chkOutput.BeginInvoke(new MethodInvoker(() => chkOutput.Image = Properties.Resources.enablealarm));
+                GlobalVar.log.AppandText("启用输出");
             }
             else
             {
@@ -52,6 +55,7 @@ namespace CV_app
                 //outPut = "false";
                 database.setValue("output", "false");
                 GlobalVar.camera.resultOutput(false);
+                GlobalVar.log.AppandText("禁用输出");
             }
             //opini.WriteIniData("Parameters", "Output", outPut, iniFilePath);
             //readParas();
@@ -71,12 +75,14 @@ namespace CV_app
                     chkConnectCam.BackColor = Color.Lime;
                     chkConnectCam.BeginInvoke(new MethodInvoker(() => chkConnectCam.Image = Properties.Resources.online));
                     chkConnectCam.BeginInvoke(new MethodInvoker(() => chkConnectCam.Text = "联机"));
+                    GlobalVar.log.AppandText("连接相机");
                 }
                 else
                 {
                     chkConnectCam.BackColor = Color.Red;
                     chkConnectCam.BeginInvoke(new MethodInvoker(() => chkConnectCam.Image = Properties.Resources.offline));
                     chkConnectCam.BeginInvoke(new MethodInvoker(() => chkConnectCam.Text = "脱机"));
+                    GlobalVar.log.AppandText("断开相机");
                 }
             }
             else
@@ -94,6 +100,7 @@ namespace CV_app
 
         private void btnSetting_Click(object sender, EventArgs e)
         {
+            GlobalVar.log.AppandText("打开设置页");
             GlobalVar.frmSetting = new Setting();
             GlobalVar.frmSetting.ShowDialog();
         }
@@ -105,15 +112,18 @@ namespace CV_app
             GlobalVar.iNG = 0;
             GlobalVar.camera.arrOutvalue = new System.Collections.ArrayList();
             GlobalVar.camera.updateData();
+            GlobalVar.log.AppandText("清除数据");
         }
 
         private void Main_Load(object sender, EventArgs e)
         {
-
+            string fPath = AppDomain.CurrentDomain.BaseDirectory+"\\log.txt";
+            GlobalVar.log = new Tool.Log(fPath);
+            GlobalVar.log.AppandText("运行程序");
             GlobalVar.ZAppParam_CCDs = ZDatabase.Instance().GetParams<AppParam_CCD>("app_ccd");
             Parameters parameters = new Parameters();
             parameters.initialParameters();
-
+            GlobalVar.log.AppandText("初始化完成");
         }
     }
 }

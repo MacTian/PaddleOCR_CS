@@ -5,6 +5,7 @@ using GxIAPINET;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -45,6 +46,7 @@ namespace CV_app
 
         private void Setting_Load(object sender, EventArgs e)
         {
+            GlobalVar.log.AppandText("加载设置");
             //隐藏tbpRecipe
             tbpRecipe.Parent = null;
             BuildDataGridView();
@@ -73,7 +75,7 @@ namespace CV_app
                 //GlobalVar.camera.m_objIGXFeatureControl.GetEnumFeature("LineMode").SetValue("Output");
                 Console.WriteLine("camera初始化成功");
             }
-
+            GlobalVar.log.AppandText("加载设置完成");
         }
 
         private void m_cb_TriggerMode_SelectedIndexChanged(object sender, EventArgs e)
@@ -212,6 +214,8 @@ namespace CV_app
                 {
                     //Console.WriteLine("未检测到校准圆，请优化调试图像");
                     MessageBox.Show("未检测到校准圆，请优化调试图像");
+                    GlobalVar.log.AppandText("校准失败");
+                    return;
                 }
                 double visionox = circles[0].Center.X;
                 double visionoy = circles[0].Center.Y;
@@ -228,6 +232,7 @@ namespace CV_app
                 MCvScalar txtColor = new MCvScalar(0, 0, 255);
                 CvInvoke.PutText(src, "Calib Success!", txtLocation, FontFace.HersheySimplex, 1, txtColor, 2);
                 pictureBox1.Image = src.ToBitmap();
+                GlobalVar.log.AppandText("校准成功");
             }
             catch (Exception ex)
             {
@@ -536,7 +541,7 @@ namespace CV_app
 
         private void btnSaveModel_Click(object sender, EventArgs e)
         {
-            string fName = Directory.GetCurrentDirectory().ToString() + "\\Models\\Model1.bmp";   // 获取文件名
+            string fName = AppDomain.CurrentDomain.BaseDirectory + "\\Models\\Model1.bmp";   // 获取文件名
             CvInvoke.Imwrite(fName, GlobalVar.camera.matImage);
             //saveFileDialog1.InitialDirectory = Directory.GetCurrentDirectory().ToString() + "\\Models";  // 获取文件路径
             ////MessageBox.Show(saveFileDialog1.InitialDirectory);
@@ -553,7 +558,7 @@ namespace CV_app
 
         private void btnSelectModel_Click(object sender, EventArgs e)
         {
-            string ImageModel = Directory.GetCurrentDirectory().ToString() + "\\Models\\Model1.bmp";
+            string ImageModel = AppDomain.CurrentDomain.BaseDirectory + "\\Models\\Model1.bmp";
             Image m = Image.FromFile(ImageModel);
             pictureBox1.Image = m;
             //if (openFileDialog1.ShowDialog() == DialogResult.OK)
@@ -599,6 +604,7 @@ namespace CV_app
         {
             m_enable = true;
             m_pattern = true;
+            GlobalVar.log.AppandText("创建特征");
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
@@ -611,6 +617,7 @@ namespace CV_app
 
         private void btnFinishSet_Click(object sender, EventArgs e)
         {
+            GlobalVar.log.AppandText("设置结束");
             //GlobalVar.frmSetting = null;
             this.Close();
         }
@@ -678,6 +685,7 @@ namespace CV_app
             GlobalVar.frmSetting = null;
             Parameters parameters = new Parameters();
             parameters.initialParameters();
+            GlobalVar.log.AppandText("关闭设置");
         }
 
         private void dgvCCDParams_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -722,6 +730,7 @@ namespace CV_app
                 database.setValue("capturedelay", txtCaptureDelay.Text);
                 GlobalVar.camera.m_objIGXFeatureControl.GetFloatFeature("TriggerDelay").SetValue(Convert.ToInt32(txtCaptureDelay.Text) * 1000);
             }
+            GlobalVar.log.AppandText("修改拍照延时");
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -771,6 +780,52 @@ namespace CV_app
             if (tabControl1.SelectedTab.Name == "tbpAllParams")
                 BuildDataGridView();
         }
+        #region 操作Tips
+        
+        private void btnCreatePattern_MouseEnter(object sender, EventArgs e)
+        {
+            if ((this.picTips.Image != null)) //先释放
+            {
+                picTips.Image.Dispose();
+                picTips.Image = null;
+            }
+            Image img = Properties.Resources.selectpattern;   //加载图片
+            MemoryStream mstr = new MemoryStream(); //创建新的MemoryStream
+            img.Save(mstr, ImageFormat.Gif);        // 保存这个对象
+            picTips.Image = Image.FromStream(mstr); //显示
+            img.Dispose();//释放占用
+        }
+
+        #endregion 操作Tips
+
+
+        private void btnSearchRegion_MouseEnter(object sender, EventArgs e)
+        {
+            if ((this.picTips.Image != null)) //先释放
+            {
+                picTips.Image.Dispose();
+                picTips.Image = null;
+            }
+            Image img = Properties.Resources.selectregion;   //加载图片
+            MemoryStream mstr = new MemoryStream(); //创建新的MemoryStream
+            img.Save(mstr, ImageFormat.Gif);        // 保存这个对象
+            picTips.Image = Image.FromStream(mstr); //显示
+            img.Dispose();//释放占用
+        }
+
+        private void btnOCRRegion_MouseEnter(object sender, EventArgs e)
+        {
+            if ((this.picTips.Image != null)) //先释放
+            {
+                picTips.Image.Dispose();
+                picTips.Image = null;
+            }
+            Image img = Properties.Resources.selectocr;   //加载图片
+            MemoryStream mstr = new MemoryStream(); //创建新的MemoryStream
+            img.Save(mstr, ImageFormat.Gif);        // 保存这个对象
+            picTips.Image = Image.FromStream(mstr); //显示
+            img.Dispose();//释放占用
+        }
 
         int px, py, pw, ph;
         private void savePattern()
@@ -781,8 +836,9 @@ namespace CV_app
             Bitmap img = (Bitmap)pictureBox1.Image;
             Image<Bgr, Byte> image = img.ToImage<Bgr, byte>();
             Mat pattern = new Mat(image.Mat, roi);
-            string fName = Directory.GetCurrentDirectory().ToString() + "\\Models\\Pattern1.bmp";   // 获取文件名
+            string fName = AppDomain.CurrentDomain.BaseDirectory + "\\Models\\Pattern1.bmp";   // 获取文件名
             CvInvoke.Imwrite(fName, pattern);
+            GlobalVar.log.AppandText("保存特征:"+fName);
             //saveFileDialog1.InitialDirectory = Directory.GetCurrentDirectory().ToString() + "\\Patterns";  // 获取文件路径                                                                                           //MessageBox.Show(saveFileDialog1.InitialDirectory);
             //saveFileDialog1.Filter = "*.bmp|bmp file";   // 设置文件类型
             //saveFileDialog1.DefaultExt = ".bmp";   // 默认文件的拓展名
@@ -803,6 +859,7 @@ namespace CV_app
             database.setValue("ystart", y.ToString());
             database.setValue("swidth", w.ToString());
             database.setValue("sheight", h.ToString());
+            GlobalVar.log.AppandText("修改搜索区域");
         }
         private void saveOCRRegion()
         {
@@ -818,6 +875,7 @@ namespace CV_app
             database.setValue("yoffset", Yoffset.ToString());
             database.setValue("woffset", Woffset.ToString());
             database.setValue("hoffset", Hoffset.ToString());
+            GlobalVar.log.AppandText("修改OCR区域");
         }
         private static void ConvertCoordinates(PictureBox pic, out int X0, out int Y0, int x, int y)
         {

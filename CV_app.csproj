@@ -99,11 +99,16 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tool, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\x64\Debug\Tool.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
     <Compile Include="Database.cs" />
+    <Compile Include="DiskSpace.cs" />
     <Compile Include="frmEditText.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -217,6 +222,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo.ico" />
+    <None Include="Resources\selectregion.gif" />
+    <None Include="Resources\selectpattern.gif" />
+    <None Include="Resources\selectocr.gif" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

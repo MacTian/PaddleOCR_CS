@@ -14,7 +14,7 @@ namespace CV_app
             initPPOCR();
             initQRCode();
             initFilePath();
-            string fname = Directory.GetCurrentDirectory().ToString() + "\\Models\\Pattern1.bmp";
+            string fname = AppDomain.CurrentDomain.BaseDirectory + "\\Models\\Pattern1.bmp";
             GlobalVar.templateImg = CvInvoke.Imread(fname);
             return false;
         }

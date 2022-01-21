@@ -1,6 +1,7 @@
 using Emgu.CV;
 using OcrLiteLib;
 using System.Collections.Generic;
+using Tool;
 
 namespace CV_app
 {
@@ -15,6 +16,7 @@ namespace CV_app
         internal static WeChatQRCode qRCode;
         public static Mat templateImg;
         public static int iCount, iNG;
+        public static Log log;
         public static Dictionary<string, AppParam_CCD> ZAppParam_CCDs = new Dictionary<string, AppParam_CCD>();    // 应用程序配置-ccd
     }
 }
